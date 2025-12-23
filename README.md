@@ -16,10 +16,16 @@ A multi-agent conversational AI system built with FastAPI and LangGraph. Feature
 ## Screenshots
 
 ### Chat Interface
-![Chat Interface](../docs/images/chat-interface.png)
+![Chat Interface](docs/images/chat-interface.png)
 
-### Tool Calls & Token Usage
-![Tool Calls](../docs/images/tool-calls.png)
+### Tickets
+![Tickets](docs/images/tickets.png)
+
+### Policies
+![Policies](docs/images/policies.png)
+
+### LangSmith Trace View
+![Trace View](docs/images/trace-view.png)
 
 ## Architecture
 
