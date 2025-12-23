@@ -36,22 +36,39 @@ class TicketType(str, enum.Enum):
     SERVICENOW = "servicenow"
 
 
+class AuthProvider(str, enum.Enum):
+    """Authentication provider types."""
+
+    LOCAL = "local"
+    AZURE_AD = "azure_ad"
+
+
 class User(Base):
     """
     User model for authentication.
 
+    Supports both local (username/password) and SSO (Azure AD) authentication.
+
     Attributes:
         id: Primary key.
-        username: Unique username for login.
-        hashed_password: Bcrypt-hashed password with salt.
+        username: Unique username for login (email for SSO users).
+        hashed_password: Bcrypt-hashed password with salt (nullable for SSO).
+        email: User email address.
+        display_name: User's display name.
+        auth_provider: Authentication provider (local or azure_ad).
+        azure_ad_id: Azure AD object ID for SSO users.
         created_at: Account creation timestamp.
     """
 
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
-    username = Column(String(50), unique=True, index=True, nullable=False)
-    hashed_password = Column(String(255), nullable=False)
+    username = Column(String(100), unique=True, index=True, nullable=False)
+    hashed_password = Column(String(255), nullable=True)  # Nullable for SSO users
+    email = Column(String(255), unique=True, index=True, nullable=True)
+    display_name = Column(String(255), nullable=True)
+    auth_provider = Column(Enum(AuthProvider), default=AuthProvider.LOCAL)
+    azure_ad_id = Column(String(255), unique=True, nullable=True, index=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 

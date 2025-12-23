@@ -1,11 +1,25 @@
 /**
  * Login and registration component.
- * Handles user authentication with JWT tokens.
+ * Handles user authentication with JWT tokens and Azure AD SSO.
  */
 
 import { useState } from 'react';
 import { authApi } from '../services/api';
 import { useAuth } from '../context/AuthContext';
+
+/**
+ * Microsoft logo SVG for SSO button.
+ */
+function MicrosoftLogo() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 21 21" xmlns="http://www.w3.org/2000/svg">
+      <rect x="1" y="1" width="9" height="9" fill="#f25022"/>
+      <rect x="11" y="1" width="9" height="9" fill="#7fba00"/>
+      <rect x="1" y="11" width="9" height="9" fill="#00a4ef"/>
+      <rect x="11" y="11" width="9" height="9" fill="#ffb900"/>
+    </svg>
+  );
+}
 
 export default function Login() {
   const [isLogin, setIsLogin] = useState(true);
@@ -13,7 +27,8 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
+  const [ssoLoading, setSsoLoading] = useState(false);
+  const { login, loginWithSSO, ssoEnabled } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,11 +49,43 @@ export default function Login() {
     }
   };
 
+  const handleSSOLogin = async () => {
+    setError('');
+    setSsoLoading(true);
+
+    try {
+      await loginWithSSO();
+      // Note: This will redirect to Azure AD, so we won't reach here
+    } catch (err) {
+      setError('Failed to initiate SSO login. Please try again.');
+      setSsoLoading(false);
+    }
+  };
+
   return (
     <div className="login-container">
       <div className="login-box">
         <h1>DevSecOps Chat</h1>
         <p className="login-subtitle">Security Assistant with Multi-Tool Reasoning</p>
+
+        {/* SSO Login Button */}
+        {ssoEnabled && (
+          <>
+            <button
+              type="button"
+              className="sso-button"
+              onClick={handleSSOLogin}
+              disabled={ssoLoading || loading}
+            >
+              <MicrosoftLogo />
+              <span>{ssoLoading ? 'Redirecting...' : 'Sign in with Microsoft'}</span>
+            </button>
+
+            <div className="login-divider">
+              <span>or continue with username</span>
+            </div>
+          </>
+        )}
 
         <div className="auth-tabs">
           <button
@@ -66,7 +113,7 @@ export default function Login() {
               placeholder="Enter username"
               required
               minLength={3}
-              disabled={loading}
+              disabled={loading || ssoLoading}
             />
           </div>
 
@@ -80,13 +127,13 @@ export default function Login() {
               placeholder="Enter password"
               required
               minLength={8}
-              disabled={loading}
+              disabled={loading || ssoLoading}
             />
           </div>
 
           {error && <div className="error-message">{error}</div>}
 
-          <button type="submit" className="login-button" disabled={loading}>
+          <button type="submit" className="login-button" disabled={loading || ssoLoading}>
             {loading ? 'Please wait...' : isLogin ? 'Login' : 'Create Account'}
           </button>
         </form>

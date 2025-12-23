@@ -34,10 +34,25 @@ api.interceptors.response.use(
   }
 );
 
+export type AuthProvider = 'local' | 'azure_ad';
+
 export interface User {
   id: number;
   username: string;
+  email?: string;
+  display_name?: string;
+  auth_provider: AuthProvider;
   created_at: string;
+}
+
+export interface SSOStatus {
+  enabled: boolean;
+  provider: string;
+}
+
+export interface SSOLoginResponse {
+  auth_url: string;
+  state: string;
 }
 
 export interface TokenResponse {
@@ -103,7 +118,11 @@ export const authApi = {
     api.post<TokenResponse>('/auth/login', { username, password }),
   register: (username: string, password: string) =>
     api.post<TokenResponse>('/auth/register', { username, password }),
-  me: () => api.get<User>('/auth/me')
+  me: () => api.get<User>('/auth/me'),
+
+  // SSO endpoints
+  ssoStatus: () => api.get<SSOStatus>('/auth/sso/status'),
+  ssoLogin: () => api.get<SSOLoginResponse>('/auth/sso/login')
 };
 
 export interface StreamCallbacks {

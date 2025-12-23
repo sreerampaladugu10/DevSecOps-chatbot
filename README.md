@@ -12,6 +12,7 @@ A multi-agent conversational AI system built with FastAPI and LangGraph. Feature
 - **Cost Tracking** - Per-request and session token/cost metrics
 - **Observability** - LangSmith tracing integration
 - **Security Guardrails** - Prompt injection detection, PII redaction
+- **Azure AD SSO** - Single Sign-On with Microsoft Azure Active Directory
 
 ## Screenshots
 
@@ -26,6 +27,9 @@ A multi-agent conversational AI system built with FastAPI and LangGraph. Feature
 
 ### LangSmith Trace View
 ![Trace View](docs/images/trace-view.png)
+
+### SSO Sign-in with Azure AD
+![SSO Sign-in](docs/images/sso-signin-with-azure-ad.png)
 
 ## Architecture
 
@@ -417,11 +421,14 @@ Conversation grows to 85K tokens (> 80K target)
 
 ### Authentication
 
-| Method | Endpoint         | Description           |
-| ------ | ---------------- | --------------------- |
-| POST   | `/auth/register` | Create new user       |
-| POST   | `/auth/login`    | Get JWT token         |
-| GET    | `/auth/me`       | Get current user info |
+| Method | Endpoint             | Description                          |
+| ------ | -------------------- | ------------------------------------ |
+| POST   | `/auth/register`     | Create new user                      |
+| POST   | `/auth/login`        | Get JWT token                        |
+| GET    | `/auth/me`           | Get current user info                |
+| GET    | `/auth/sso/status`   | Check if Azure AD SSO is enabled     |
+| GET    | `/auth/sso/login`    | Initiate Azure AD SSO login flow     |
+| GET    | `/auth/sso/callback` | OAuth callback (redirects to frontend)|
 
 ### Policies
 
@@ -461,6 +468,13 @@ CHROMA_PERSIST_DIR=./chroma_db
 JWT_SECRET_KEY=your-secret-key-here
 JWT_ALGORITHM=HS256
 JWT_EXPIRATION_HOURS=24
+
+# Azure AD SSO (Optional)
+AZURE_AD_CLIENT_ID=your-client-id
+AZURE_AD_CLIENT_SECRET=your-client-secret
+AZURE_AD_TENANT_ID=your-tenant-id
+AZURE_AD_REDIRECT_URI=http://localhost:8000/api/auth/sso/callback
+FRONTEND_URL=http://localhost:5173
 
 # LangSmith Tracing (Optional)
 LANGSMITH_TRACING=true

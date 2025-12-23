@@ -36,6 +36,13 @@ class TicketType(str, Enum):
     SERVICENOW = "servicenow"
 
 
+class AuthProvider(str, Enum):
+    """Authentication provider types."""
+
+    LOCAL = "local"
+    AZURE_AD = "azure_ad"
+
+
 class UserCreate(BaseModel):
     """
     Schema for user registration.
@@ -56,11 +63,17 @@ class UserResponse(BaseModel):
     Attributes:
         id: Unique user identifier.
         username: User's username.
+        email: User's email address.
+        display_name: User's display name.
+        auth_provider: Authentication provider (local or azure_ad).
         created_at: Account creation timestamp.
     """
 
     id: int
     username: str
+    email: Optional[str] = None
+    display_name: Optional[str] = None
+    auth_provider: AuthProvider = AuthProvider.LOCAL
     created_at: datetime
 
     class Config:

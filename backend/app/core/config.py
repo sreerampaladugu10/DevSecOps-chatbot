@@ -31,6 +31,15 @@ class Settings(BaseSettings):
     JWT_ALGORITHM: str = "HS256"
     JWT_EXPIRATION_HOURS: int = 24
 
+    # Azure AD SSO Configuration
+    AZURE_AD_CLIENT_ID: str = ""
+    AZURE_AD_CLIENT_SECRET: str = ""
+    AZURE_AD_TENANT_ID: str = ""
+    AZURE_AD_REDIRECT_URI: str = "http://localhost:5173/auth/callback"
+
+    # Frontend URL for redirects
+    FRONTEND_URL: str = "http://localhost:5173"
+
     # Azure OpenAI
     AZURE_OPENAI_ENDPOINT: str = ""
     AZURE_OPENAI_API_KEY: str = ""
