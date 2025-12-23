@@ -29,7 +29,7 @@ A multi-agent conversational AI system built with FastAPI and LangGraph. Feature
 ![Trace View](docs/images/trace-view.png)
 
 ### SSO Sign-in with Azure AD
-![SSO Sign-in](docs/images/sso-signin-with-azure-ad.png)
+![SSO Sign-in](docs/images/azure-ad-sso-login.png)
 
 ## Architecture
 
