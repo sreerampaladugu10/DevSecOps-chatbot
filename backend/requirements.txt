@@ -1,0 +1,17 @@
+fastapi
+uvicorn
+sqlalchemy
+pydantic-settings
+chromadb
+bcrypt
+python-jose[cryptography]
+langchain-openai
+langchain
+langgraph
+python-dotenv
+langsmith
+python-multipart
+sse-starlette
+tenacity
+cachetools
+tiktoken
